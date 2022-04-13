@@ -1,0 +1,11 @@
+{% extends "classes/base.html" %}
+
+{% block content %}
+
+{% if sign_up_removed %}
+	<h4>You have successfully removed your booking for this class!</h4>
+{% else %}
+	<h4>Something went wrong</h4>
+{% endif %}
+
+{% endblock content %}

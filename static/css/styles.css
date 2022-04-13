@@ -1,0 +1,15 @@
+#content_div {
+  width: 90%;
+  border: 5px solid black;
+  padding: 50px;
+  margin: 20px;
+  background-color: white;
+}
+
+#benchmark_display_table {
+	border: 2px solid black;
+}
+
+#exercising_pic {
+	width: 90%;
+}

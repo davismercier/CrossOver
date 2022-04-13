@@ -1,0 +1,87 @@
+{% extends "classes/base.html" %}
+
+{% block content %}
+
+    <form name="my_form" action = "{% url 'booked' %}" method = "post">
+      {% csrf_token %}
+      <input type="hidden" id="class_id" name="class_id">
+      <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
+      <input type="hidden" id="date_string" name="date_string" value="{{ date_string }}">
+    </form>
+    
+    <div id = "date_nav">
+      <button id="prev_day"><-</button>
+      <span id="date">{{ date_string }}</span>
+      <button id="next_day">-></button>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center" id="display_table_div">
+      {% if classes %}
+        {% for class, is_booked in classes.items %}
+        <div class="col" >
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+              <h4 class="my-0 fw-normal">{{class}}</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title"></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>{{ class.description }}</li>
+              </ul>
+              {% if is_booked %}
+              <button type="button" id="{{ class.id }}" class="w-100 btn btn-lg btn-primary">Booked</button>
+              {% else %}
+              <button type="button" id="{{ class.id }}" onclick="book_class(event)" class="w-100 btn btn-lg btn-outline-primary">Sign Up!</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>There are no classes scheduled for today!</p>
+      {% endif %}
+    </div>
+
+{% endblock content %}
+
+{% block endbodyscript %}
+    <script>
+      console.log("{{ user.id }}");
+
+      date_string = "{{ date_string }}"
+      date_array = date_string.split("-");
+      date_array[1] = String(parseInt(date_array[1]) - 1);  // -1 necessary since month is 0 indexed
+      var date = new Date(date_array[0], date_array[1], date_array[2]); 
+
+      var prev_day_button = document.querySelector("#prev_day");
+      var next_day_button = document.querySelector("#next_day");
+      var class_id_input = document.querySelector("#class_id");
+
+      prev_day_button.addEventListener("click", ()=>{
+          date.setDate(date.getDate() - 1);
+          prev_date_string = date.toLocaleDateString();
+          prev_date_array = prev_date_string.split("/");
+          prev_date = prev_date_array[2] + "-" + prev_date_array[0] + "-" +  prev_date_array[1];
+          location.href = "{% url 'classes' 'x' %}".replace(/x/, prev_date);
+
+      });
+
+      next_day_button.addEventListener("click", ()=>{
+          date.setDate(date.getDate() + 1);
+          next_date_string = date.toLocaleDateString()
+          next_date_array = next_date_string.split("/");
+          next_date = next_date_array[2] + "-" + next_date_array[0] + "-" +  next_date_array[1];
+          location.href = "{% url 'classes' 'x' %}".replace(/x/, next_date);
+
+      });
+
+      function book_class(event){
+          var class_id = event.target.id;
+          class_id_input.value = class_id;
+          document.my_form.submit();
+      }
+
+  </script> 
+
+
+{% endblock endbodyscript %}

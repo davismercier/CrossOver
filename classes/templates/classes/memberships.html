@@ -1,0 +1,43 @@
+{% extends "classes/base.html" %}
+
+{% block content %}
+    <form name="my_form" action = "{% url 'add_membership' %}" method = "post">
+      {% csrf_token %}
+      <input type="hidden" id="membership_id" name="membership_id">
+    </form>
+
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+      {% for membership in memberships %}
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+            <h4 class="my-0 fw-normal">{{ membership.name }}</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">${{ membership.cost }}</h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>{{ membership.description }}</li>
+            </ul>
+            <a href="#">
+              <button type="button" id="{{ membership.id }}" onclick="add_membership(event)" class="w-100 btn btn-lg btn-outline-primary">Purchase</button>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+{% endblock content %}
+
+{% block endbodyscript %}
+    <script>
+        var membership_id_input = document.querySelector("#membership_id");
+
+        function add_membership(event){
+            var membership_id = event.target.id;
+            membership_id_input.value = membership_id;
+            document.my_form.submit();
+        }
+    </script>
+
+{% endblock endbodyscript %}

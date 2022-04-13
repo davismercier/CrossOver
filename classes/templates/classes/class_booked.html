@@ -1,0 +1,11 @@
+{% extends "classes/base.html" %}
+
+{% block content %}
+
+{% if class_booked %}
+	<h4>You have successfully signed up for your class!</h4>
+{% else %}
+	<h4>You need a membership or passes to book a class!</h4>
+{% endif %}
+
+{% endblock content %}
