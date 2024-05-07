@@ -1,0 +1,63 @@
+{% extends "classes/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+
+
+  <link href="{% static 'calendar/lib/main.css' %}" rel='stylesheet' />
+  <script src="{% static 'calendar/lib/main.js' %}"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'timeGridWeek',
+    initialDate: '{{ date }}',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    allDaySlot: false,
+    businessHours: [ 
+	  {
+	    daysOfWeek: [ 1, 2, 3, 4], // Monday - Thursday
+	    startTime: '05:45', 
+	    endTime: '19:00'
+	  },
+	  {
+	    daysOfWeek: [ 5 ], // Friday
+	    startTime: '05:45', 
+	    endTime: '17:30' 
+	  },
+	  {
+	    daysOfWeek: [ 6 ], // Saturday
+	    startTime: '08:00', 
+	    endTime: '11:00' 
+	  }
+	],
+    events: [
+      {% for class in classes %}
+         {
+          title: '{{class.name}}',
+          daysOfWeek: [{{class.days_of_week}}],
+          startTime: '{{class.start_time}}',
+          endTime: '{{class.end_time}}'
+        },
+      {% endfor %}
+    ]
+  });
+
+  calendar.render();
+});
+
+</script>
+
+{% endblock extrahead %}
+
+{% block content %}
+
+<div id='calendar'></div>
+
+{% endblock content %}

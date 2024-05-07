@@ -1,0 +1,15 @@
+{% extends "classes/base.html" %}
+
+{% block content %}
+
+{% for class, user_list in sign_ups_dict.items %}
+	<h6>{{class}}</h6>
+		<ul>
+			{% for user in user_list %}
+				<li>{{user.first_name}} {{user.last_name}}</li>
+			{% endfor %}
+		</ul>
+{% endfor %}
+	
+
+{% endblock content %}
