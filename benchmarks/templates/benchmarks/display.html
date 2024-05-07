@@ -1,0 +1,41 @@
+{% extends "classes/base.html" %}
+
+{% block content %}
+<form name="new_scores_form" action = "{% url 'scores_submitted' %}" method = "post">
+{% csrf_token %}
+	<div class="table-responsive">
+		<table class="table table-striped">
+		  <tr>
+		    <th></th>
+		    {% for benchmark, number_of_workouts in workouts_per_benchmark.items %}
+			    <th colspan="{{ number_of_workouts }}">{{ benchmark.name }}</th> 
+		    {% endfor %}
+		  </tr>
+		  <tr>
+		    <th></th>
+		    {% for benchmark, workouts in benchmarks.items %}
+		    	{% for workout in workouts %}
+			    	<th colspan="2">{{ workout.name }}</th> 
+		    	{% endfor %}
+		    {% endfor %}
+		  </tr>
+		    {% for member, scores in members.items %}
+		  <tr>	
+	    	<th>{{ member.first_name }} {{ member.last_name }}</th>
+	    	{% for score in scores %}
+	    		<td>
+	    			<p>{{score.date}}</p>
+	    			<p>{{ score.score }}</p>
+	    		</td>
+	    		<td>
+	    			<p>{{ todays_date }}<p>
+	    			<input type="text" id="{{ score.id }}" name="{{ score.id }}">
+	    		</td>
+	    	{% endfor %}
+		  </tr>
+	    {% endfor %}
+		</table>
+	</div>
+	<input type="submit" value="submit scores">
+</form>
+{% endblock content %}

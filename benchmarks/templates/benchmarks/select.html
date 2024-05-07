@@ -1,0 +1,117 @@
+{% extends "classes/base.html" %}
+
+
+{% block content %}
+<h4>Bechmarks!</h4>
+<p>Select the members and benchmark workouts below</p>
+
+<form name="my_form" action = "{% url 'display' %}" method = "post">
+{% csrf_token %}
+	<label for="MemberList" class="form-label">Select Members</label>
+	<ul class="list-group" id="selected_members"></ul>
+	<input class="form-control" oninput="add_member()" list="MemberOptions" id="MemberList" placeholder="Type to search...">
+	<input type="hidden" id="selected_member_input" name="selected_member_input">
+	<datalist id="MemberOptions">
+		{% for member in members %}
+	  		<option value="{{ member.first_name }} {{ member.last_name }}" id="{{ member.id }}">
+		{% endfor %}
+	</datalist>
+
+	<br>
+	<label for="BenchmarkList" class="form-label">Select Benchmark</label>
+	<ul class="list-group" id="selected_benchmarks"></ul>
+	<input class="form-control" oninput="add_benchmark()" list="BenchmarkOptions" id="BenchmarkList" placeholder="Type to search...">
+	<input type="hidden" id="selected_benchmark_input" name = "selected_benchmark_input">
+	<datalist id="BenchmarkOptions">
+		{% for benchmark in benchmarks %}
+	  		<option value="{{ benchmark.name }}" id="{{ benchmark.id }}">
+		{% endfor %}
+	</datalist>
+	<button onclick="submitForm()">Submit</button>
+</form>
+
+<script type="text/javascript">
+
+	var array_of_member_ids = [];
+	var array_of_benchmark_ids = [];
+
+	function submitForm(){
+		var selected_member_hidden_input = document.querySelector("#selected_member_input");
+		selected_member_hidden_input.value = array_of_member_ids;
+		var selected_benchmark_hidden_input = document.querySelector("#selected_benchmark_input");
+		selected_benchmark_hidden_input.value = array_of_benchmark_ids
+
+		document.my_form.submit();
+	}
+
+	function add_member() {
+		var member_input = document.getElementById("MemberList");
+	    var val = member_input.value;
+	    var opts = document.getElementById("MemberOptions").childNodes;
+	    var members_list = document.getElementById("selected_members");
+	    var button = document.createElement("button");
+	    button.className = "btn btn-danger";
+	    button.onclick = remove_member;
+	    button.innerText = "Remove";
+	    for (var i = 0; i < opts.length; i++) {
+	      if (opts[i].value === val) {
+	      	array_of_member_ids.push(opts[i].id);
+	      	const list_item = document.createElement("li");
+	      	list_item.id = opts[i].id;
+	      	list_item.className = "list-group-item";
+	      	list_item.value = val;
+	      	list_item.appendChild(document.createTextNode(val));
+	      	list_item.appendChild(button);
+	      	members_list.appendChild(list_item);
+			member_input.value = "";
+	        break;
+	      }
+	    }
+  	}	
+
+	function remove_member(event) {
+	  	var list_item = event.target.parentNode;
+	  	var index_to_remove = array_of_member_ids.indexOf(list_item.id);
+	  	if (index_to_remove !== -1) {
+	  		array_of_member_ids.splice(index_to_remove, 1);
+	  	}
+	  	list_item.remove();
+	}
+
+	function add_benchmark() {
+		var benchmark_input = document.querySelector("#BenchmarkList");
+		var val = benchmark_input.value;
+		var opts = document.querySelector("#BenchmarkOptions").childNodes;
+		var benchmarks_list = document.querySelector("#selected_benchmarks");
+		var button = document.createElement("button");
+		button.className = "btn btn-danger";
+		button.onclick = remove_benchmark;
+		button.innerText = "Remove";
+		for (var i = 0; i < opts.length; i++) {
+			if (opts[i].value === val) {
+				array_of_benchmark_ids.push(opts[i].id);
+				const list_item = document.createElement("li");
+				list_item.id = opts[i].id;
+				list_item.className = "list-group-item";
+		      	list_item.value = val;
+		      	list_item.appendChild(document.createTextNode(val));
+		      	list_item.appendChild(button);
+		      	benchmarks_list.appendChild(list_item);
+				benchmark_input.value = "";
+		        break;
+			}
+		}
+	}
+
+	function remove_benchmark(event) {
+		var list_item = event.target.parentNode;
+	  	var index_to_remove = array_of_benchmark_ids.indexOf(list_item.id);
+	  	if (index_to_remove !== -1) {
+	  		array_of_benchmark_ids.splice(index_to_remove, 1);
+	  	}
+	  	list_item.remove();
+	}
+</script>
+
+{% endblock content %}
+
